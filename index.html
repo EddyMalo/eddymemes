@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memes</title>
+    <style>
+        body, html {
+          margin: 0; padding: 0; height: 100%; display: flex; align-items: center; justify-content: center; background: #000;
+        }
+        img {
+          max-width: 90vw;
+          max-height: 90vh;
+          border: 5px solid white;
+          box-shadow: 0 0 20px white;
+        }
+    </style>
+</head>
+<body>
+<button id="fullscreenBtn" aria-label="Plein écran" title="Plein écran"
+        style="position:fixed; top:10px; right:10px; z-index:10; background:none; border:none; padding:0; cursor:pointer; width:36px; height:36px; opacity:0.7;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="lightgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="36" height="36">
+        <polyline points="3 8 3 15 9 15" />
+        <polyline points="15 9 15 3 8 3" />
+    </svg>
+</button>
+
+</button><img id="randomImage" src="" alt="Image aléatoire" />
+
+<script>
+    let images = [];
+        let usedIndices = [];
+
+        async function chargerImages() {
+          const response = await fetch('image_list.json');
+          images = await response.json();
+          afficherImageAleatoire();
+          setInterval(afficherImageAleatoire, 30000);
+        }
+
+        function afficherImageAleatoire() {
+          if (usedIndices.length === images.length) {
+            usedIndices = [];
+          }
+          let index;
+          do {
+            index = Math.floor(Math.random() * images.length);
+          } while (usedIndices.includes(index));
+          usedIndices.push(index);
+
+          document.getElementById('randomImage').src = 'img/' + images[index];
+        }
+
+        chargerImages();
+
+    // Fonctionnalité plein écran
+    document.getElementById('fullscreenBtn').onclick = function() {
+      const elem = document.documentElement;
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    };
+</script>
+</body>
+</html>
+
